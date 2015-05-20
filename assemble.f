@@ -93,7 +93,7 @@ C         DS(I,18) = DBH(NOD(I,4)-199, 4)*DOMEG*DCS(I)/12.0
       RETURN
       END
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C:: SMATP  Computing coefficients in Matrix DS for symmatric field
+C:: SMATP  Computing coefficients in Matrix DS for symmetric field
       SUBROUTINE SMATP
       PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
       COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
@@ -123,7 +123,7 @@ C-------------------------------------------------------------------------------
           DQ(J) = DY(MOD(J,3)+1) - DY(MOD(J+1,3)+1)
           DR(J) = DX(MOD(J+1,3)+1) - DX(MOD(J,3)+1)
    30   CONTINUE
-C-----------   Symmatric field 1   ------------
+C-----------   Symmetric field 1   ------------
         DDX = (DX(1)+DX(2)+DX(3))/3.0
 C
         N=1
@@ -167,7 +167,7 @@ C-------------------------------------------------------------------------------
    70     CONTINUE
         END IF 
 C --------   Computing current density   ----------
-C---------   Symmatric field 2    ----------
+C---------   Symmetric field 2    ----------
         DCON = DCS(I)/4.0
 C------------------------------------------------------------------
         DS(I,7) = DC1 * DCON
@@ -187,7 +187,7 @@ C------------------------------------------------------------------
 C------  Computing coefficients of eddy current  -------
         IF (INT(NOD(I,4)/100) .EQ. 3)  THEN
 C         DS(I,18) = DBH(NOD(I,4)-199, 4)*DOMEG*DCS(I)/12.0
-C-------  Symmatric field 3  --------
+C-------  Symmetric field 3  --------
           DS(I,18) = 5.92E7*DOMEG*DCS(I)/12.0*DDX
 C------------------------------------------------------
         ELSE
@@ -310,16 +310,18 @@ C::::
       DIMENSION  DCC (NA3,11), DCCC(NA3,11), S(9), DDA(3,11), DX(3)
 C 
       DO 900 I=1, NELEM
-        DO 910  J=1, NDEG
+        DO J=1, NDEG
           DCCC(I,J) = 0.0
-  910   CONTINUE
+        END DO
   900 CONTINUE
+  
       DO 109  I=1, NCOIL
         S(I) = 0.0
-        DO 110  J=1, NDEG
+        DO J=1, NDEG
           DCC(I,J) = 0.0
-  110   CONTINUE
+        END DO
   109 CONTINUE
+  
       DO 60  I=1, MELEM
         IF (INT(NOD(I,4)/100) .NE. 3) GOTO 60
         IF (NOD(I,4) .EQ. 300) GOTO 60
@@ -328,17 +330,17 @@ C
   103   CONTINUE
         DO 90  J=1, 3
           N = NOD(I,J)
-          DO 100  K=2, NDEG
+          DO  K=2, NDEG
             DDA(J,K) = DAA(NDEG * N + K)
-  100     CONTINUE
+          END DO
           DX(J) = XY(N+1, 1)
    90   CONTINUE
         DDX = (DX(1) + DX(2) + DX(3)) / 3.0
         DO 101  J=2, NDEG
           DCCC(I,J) = 0.0
-          DO 102  K=1, 3
+          DO  K=1, 3
             DCCC(I,J) = DCCC(I,J) + DDA(K,J) * (DDX + DX(K) / 3.0)
-  102     CONTINUE
+          END DO
   101   CONTINUE
    60 CONTINUE
 C-------------------------------------------------------------DEBUG
@@ -352,9 +354,9 @@ C ---------------------------------------------------------------------
         IF (INT(NOD(I,4) / 100) .NE. 3) GOTO  10
         IF (NOD(I,4) .DQ. 300) GOTO 10
         J = NOD(I,4) - 300
-        DO 108  K=2, NDEG
+        DO K=2, NDEG
           DCC(J,K) = DCC(J,K) + DCCC(K,K) * DCS(I)
-  108   CONTINUE
+        END DO
    10 CONTINUE
 C ------------------------------------------------------------DEBUG
 C     DO 340  I=1, NCOIL
@@ -390,9 +392,9 @@ C -----------------------------------------------------------------
         DC(I,11) = -5.0 * DOMEG2 * DCC(J,10) / S(J)
         GOTO  107
   104   CONTINUE
-        DO  106   J=1,  NDEG
+        DO  J=1,  NDEG
           DC(I,J) = 0.0
-  106   CONTINUE
+        END DO
   107 CONTINUE
 C-------------------------------------------------------------DEBUG
 C     DO  350  I=1, NELEM

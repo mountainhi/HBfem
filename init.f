@@ -1,9 +1,9 @@
 C:::   RDATA  Read coefficients and data for for vectors ::::::::::
       SUBROUTINE RDATA
 	  
-	  implicit real*8 (A-h,o-z) integer (i-n)
+      implicit real*8 (A-h,o-z) integer (i-n)
 	  
-      PATAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
+      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
       COMMON AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,  
      &       NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, NF,
      &       DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),

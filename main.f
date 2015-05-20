@@ -26,7 +26,8 @@ C     DF=10.
       DF=1.E6
       NDEG=5
 C          5...COMPUTE TO 2ND HARMONIC,  7...TO 3RD,  11...TO 5TH 
-      NHOWA=2
+C      NHOWA=2
+      NHOWA = 1  
 C          1... DAA = 0.   2... INPUT FROM FILE
       AAA=0.005
       BBB=0.1

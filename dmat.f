@@ -255,7 +255,7 @@ C-------------------------------------------------------------------------------
       PRINT  '(10X, "DMATB")'
       RETURN
       END
-C:::::::::::::::::::::::::::::DMATC ?????????????????????????::::::::::::::::::::::::::::::::::::::::::
+C:::::::::::::::::::::::::::::DMATC Creating a harmonic matrix:::::::::::::::::::::::::
           SUBROUTINE        DMATC
            PARAMETER  (NA1=1995, NA2=249, NA3=755, NA4=744, NA5=400, NA6=121)
            COMMON     AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
@@ -266,14 +266,14 @@ C:::::::::::::::::::::::::::::DMATC ?????????????????????????:::::::::::::::::::
          &                 DMUO, DOMEG, DPI, ITR, TOTAL, 
          &                 DN(11, 11), DBH(11, 4)
             DIMENSION    AB(0: 72), VSC(10), VSS(10)
-C***********???????????????????*************
+C***********double precision*************
 C         IMPLICIT  REAL* 8(D)
 C
-C <<<<<<<<<<<<<<???????????LOOP>>>>>>>>>>>>>>>
+C <<<<<<<<<<<<<<Loop over elements>>>>>>>>>>>>>>>
            DO  10  NE=1, NELEM
            IF  ( INT(NOD(NE, 4)  / 100). EQ. 2)              GO    TO   1000
 C
-C------------------?????????????????-----------------------------
+C------------------Air, coil space---------------------
                  DO   12  K=1, NA6
                  DD(NE, K)= 0.0
        12      CONTINUE
@@ -290,7 +290,7 @@ C------------------?????????????????-----------------------------
                  DD(NE, 121) = DD(NE,  1)
       GO      TO    9999
 C
-C--------------------??????????????200 < = NOD(I,4) < =299-----------------------
+C--------------------Iron core 200 < = NOD(I,4) < =299-----------------------
  1000   CONTINUE
             HD = 2. *DPI / 72.
             CO = 1. / DPI
@@ -509,30 +509,30 @@ C
        RETURN
        END
 :::::::::::::::::::::::::::::::::::::::::::::::::
-C::::::::::::::::: DMAT?????????????::::::::::::::
+C::::::::::::::::: DMATH Creating a harmonic matrix:::::::::
        SUBROUTINE   DMATH 
-           PARAMETER  (NA1=1995, NA2=249, NA3=755, NA4=744, NA5=400, NA6=121)
-           COMMON     AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
-         &                      NPO1, NOM, NPO2, NPOR, NELEM, NB, NDEG, NDE, DF, 
-         &                      DH(NA1, NA2), DK(NA1), DAA(NA1), DA(NA1), 
-         &                 DS(NA3, 18), DCS(NA3), DB(NA3, 22), DD(NA3, NA6), NOD(0:NA4,4),
-         &                 XY(NA5, 2), DENRYU(1, 11), DC(NA3, 11), DCPRE(NA3, 11),
-         &                 DMUO, DOMEG, DPI, ITR, TOTAL, 
-         &                 DN(11, 11), DBH(11, 4)
-            DIMENSION    AB(0: 72), VSC(4), VSS(4)
+       PARAMETER  (NA1=1995, NA2=249, NA3=755, NA4=744, NA5=400, NA6=121)
+       COMMON     AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
+     &            NPO1, NOM, NPO2, NPOR, NELEM, NB, NDEG, NDE, DF, 
+     &            DH(NA1, NA2), DK(NA1), DAA(NA1), DA(NA1), 
+     &            DS(NA3, 18), DCS(NA3), DB(NA3, 22), DD(NA3, NA6), NOD(0:NA4,4),
+     &            XY(NA5, 2), DENRYU(1, 11), DC(NA3, 11), DCPRE(NA3, 11),
+     &            DMUO, DOMEG, DPI, ITR, TOTAL, 
+     &            DN(11, 11), DBH(11, 4)
+        DIMENSION    AB(0: 72), VSC(4), VSS(4)
 C
-            DO  10  NE=1, NELEM
-               IF (INT(NOD(NE,4)/100).EQ.2)     GO  TO  1000
-               DO 12  K=1,25
-                  DD(NE,K) = 0.
-      12  CONTINUE
+        DO  10  NE=1, NELEM
+           IF (INT(NOD(NE,4)/100).EQ.2)     GO  TO  1000
+           DO 12  K=1,25
+              DD(NE,K) = 0.
+   12   CONTINUE
           DD(NE,1) = 1.0 /DMUO
           DD(NE,7) = DD(NE, 1)
           DD(NE,13)= DD(NE,1)
           DD(NE,19)= DD(NE,1)
           DD(NE,25)= DD(NE,1)
           GO  TO  9999
-000       CONTINUE
+ 1000     CONTINUE
           HD=2.*DPI/72.
           CO=1./DPI
           DO  30  NT = 0, 72
