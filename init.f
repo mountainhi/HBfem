@@ -20,32 +20,35 @@ C
       READ(15,*) NPO1, NPO2, NPO3, NELEM, NB, NCOIL
       NB=NDEG*NB
       NOM=NDEG*NPO1
+C-----Read the vertex coordinates
       READ(15,9900) CHAR
-      DO 20 I= 1, NPO3, 2
+      DO I= 1, NPO3, 2
         READ(15,*) XY(I,1), XY(I,2), XY(I+1,1), XY(I+1,2)
-   20 CONTINUE
+      END DO
 C-----Change units of X-Y coordinate
-      DO 30 I=1, NPO3
-        DO 40 J=1, 2
+      DO  I=1, NPO3
+        DO   J=1, 2
           XY(I,J) = XY(I,J) * .001
-   40   CONTINUE    
-   30 CONTINUE
+        END DO   
+      END DO
+C-----Read the nodes 
       READ(15,9900) CHAR
-      DO 10 I=1, NELEM, 4
+      DO I=1, NELEM, 4
         READ(15,*) (NOD(I+J-1, 1), NOD(I+J-1, 2),
      &              NOD (I+J-1, 3), NOD(I+J-1, 4), J=1,4)
-   10 CONTINUE
-      DO 11 I=1, NELEM
+      ENDDO
+      DO I=1, NELEM
         NOD(I,1) = NOD(I,1)-1
         NOD(I,2) = NOD(I,2)-1
         NOD(I,3) = NOD(I,3)-1
-   11 CONTINUE
+      ENDDO
+C-----Read the DBH?
       READ(15,9900) CHAR
       READ(15,*) (DBH(1,J), J=1,2)
       PRINT *
       PRINT '(1P(2E15.4))', (DBH (1,J), J=1,2)
       PRINT *
-C---  Current density source  ---
+C---  Current density source (J) ---
       READ(15,9900) CHAR
       READ(15,9900) NDE
       DO 100  KK=1, NDE
@@ -108,26 +111,34 @@ C:::: Set initial values ::::
      &        DN(11,11), DBH(11,4)
 C----------------------------------------------Initialization
       DO 20  I=1, NA1
-        DO 30  J=1, NA2
+        DO  J=1, NA2
           DH(I,J)=0.0
-   30   CONTINUE
+        END DO
    20 CONTINUE
       DO 40  I=1, NA3
-        DO 50  J=1, NA6
+        DO  J=1, NA6
           DD(I,J)=0
-   50   CONTINUE
-        DO 80 K=1, NDEG
+        END DO
+        DO  K=1, NDEG
           DCPRE(I,K)=0.0
-   80   CONTINUE
+        END DO
    40 CONTINUE
       NONC=0
       NONC2=0
 C--- Set values to matrix DN ---
-      DO 60  J=1, NDEG
-        DO 70  K=1, NDEG
+C--- Matrix 'N' in the formulation
+C---  |0 -1             .....|
+C---  |1  0                  |
+C---  |     0 -3             |
+C---  |     3  0        .....|
+C---  |          0 -5        |
+C---  |          5  0   .....|
+C---  |               .......|
+      DO  J=1, NDEG
+        DO  K=1, NDEG
           DN(J,K)=0.0
-   70   CONTINUE
-   60 CONTINUE
+        END DO
+      ENDDO
       DN(3,2)=1.0
       DN(2,3)= -1.0
       DN(5,4)=2.0
