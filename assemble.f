@@ -106,12 +106,12 @@ C:: SMATP  Computing coefficients in Matrix DS for symmetric field
       DIMENSION DX(3), DY(30, DQ(3), DR(3)
 C
       DO 10  I=1, NELEM
-        DO 20  J=1, 3
-          DX(J) = XY(NOD(I,J)+1,1)
-          DY(J) = XY(NOD(I,J)+1,2)
-   20   CONTINUE
-        DCS(I) = (DX(2)*DY(3)+DX(1)*DY(2)+DX(3)*DY(1)
-     &            - DX(2)*CY(1) - DX(1)*DY(3) - DX(3)*DY(2))*.5D0
+        DO  J=1, 3
+           DX(J) = XY(NOD(I,J)+1,1)
+           DY(J) = XY(NOD(I,J)+1,2)
+        END DO
+        DCS(I) = ( DX(2)*DY(3)+DX(1)*DY(2)+DX(3)*DY(1)
+     &            - DX(2)*CY(1) - DX(1)*DY(3) - DX(3)*DY(2) )*.5D0
 C-------------------------------------------------------------DEBUG
         IF (DCS(I) .EQ. 0.0) THEN
           PRINT *, 'MENSEKI=0  ',I
@@ -119,21 +119,21 @@ C-------------------------------------------------------------DEBUG
           STOP
         END IF
 C-------------------------------------------------------------------------------------------------
-        DO 30  J=1, 3
+        DO  J=1, 3
           DQ(J) = DY(MOD(J,3)+1) - DY(MOD(J+1,3)+1)
           DR(J) = DX(MOD(J+1,3)+1) - DX(MOD(J,3)+1)
-   30   CONTINUE
+        ENDDO
 C-----------   Symmetric field 1   ------------
         DDX = (DX(1)+DX(2)+DX(3))/3.0
 C
         N=1
-        DO 40  J=1, 3
-          DO 50  K=J, 3
+        DO   J=1, 3
+          DO  K=J, 3
             DS(I,N) = 0.25/DCS(I)*(DR(J)*DR(K)+DQ(J)*DQ(K))*DDX
      &                +(DQ(J)+DQ(K))/6.0+DCS(K)/9.0/DDX
             N=N+1
-   50     CONTINUE
-   40   CONTINUE
+          ENDDO
+        ENDDO
 C--------------------------------------------------------------------------------------
         IF (INT(NOD(I,4)/100) .EQ. 3) THEN
           DC1 = DENRYU(1,1)
@@ -309,39 +309,41 @@ C::::
      &        DN(11,11), DBH(11,4)
       DIMENSION  DCC (NA3,11), DCCC(NA3,11), S(9), DDA(3,11), DX(3)
 C 
-      DO 900 I=1, NELEM
+      DO I=1, NELEM
         DO J=1, NDEG
           DCCC(I,J) = 0.0
         END DO
-  900 CONTINUE
+      END DO
   
       DO 109  I=1, NCOIL
         S(I) = 0.0
         DO J=1, NDEG
           DCC(I,J) = 0.0
         END DO
-  109 CONTINUE
+      END DO
   
       DO 60  I=1, MELEM
         IF (INT(NOD(I,4)/100) .NE. 3) GOTO 60
         IF (NOD(I,4) .EQ. 300) GOTO 60
         J = NOD(I,4) - 300
         S(J) = S(J) + DCS(I)
-  103   CONTINUE
-        DO 90  J=1, 3
+  
+        DO  J=1, 3
           N = NOD(I,J)
           DO  K=2, NDEG
             DDA(J,K) = DAA(NDEG * N + K)
           END DO
           DX(J) = XY(N+1, 1)
-   90   CONTINUE
+        ENDDO
+		
         DDX = (DX(1) + DX(2) + DX(3)) / 3.0
-        DO 101  J=2, NDEG
+		
+        DO J=2, NDEG
           DCCC(I,J) = 0.0
           DO  K=1, 3
             DCCC(I,J) = DCCC(I,J) + DDA(K,J) * (DDX + DX(K) / 3.0)
           END DO
-  101   CONTINUE
+        ENDDO
    60 CONTINUE
 C-------------------------------------------------------------DEBUG
 C     DO 300  J=1, NELEM
