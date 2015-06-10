@@ -126,9 +126,9 @@ C::::::::::::::::: DMATB  Create harmonic matrix ::::::::::::::::::
 C
       DO 10 NE=1, NELEM
         IF (INT(NOD(NE,4)/100) .EQ. 2)  GO TO 1000
-        DO 12  K=1, 49
+        DO  K=1, 49
           DO (NE,K) = 0.0
-   12   CONTINUE
+        ENDDO
         DD(NE,1) = 1.0 / DMUO
         DD(NE,9) = DD(NE,1)
         DD(NE,17) = DD(NE,1)
@@ -140,7 +140,8 @@ C
  1000   CONTINUE
         HD = 2.0 * DPI / 72.0
         CO = 1.0 / DPI
-        DO 30  T=0, 72
+		
+        DO  T=0, 72
           SIN1 = SIN(HD*T)
           COS1 = COS(HD*T)
           SIN2 = SIN(2.0*HD*T)
@@ -153,6 +154,7 @@ C
      &         +DB(NE,12)*COS2+DB(NE,13)*SIN3+DB(NE,14)*COS3
           BT = SQRT(BX*BX+BY*BY)
           AB(T) = DBH(1,1)
+        ENDDO
 C-------------------------------------------------FERRITE  H7C1
 C         IF (ABS(BT) .GT. 0.4)  GOTO 510
 C         AB(T) = 90.5 + 1582.4*BT**4
@@ -176,28 +178,27 @@ C 560     AB(T) = 1500.0 +1.0E5 * (ABS(BT) - 0.520)
 C 580     AB(T) = AB(T) / ABS(BT)
 C 590     CONTINUE
 C------------------------------------------------------------------------------------
-   30   CONTINUE
         SO = AB(0)
-        DO 40  T=1, 71, 2
+        DO  T=1, 71, 2
           SO = SO + 4.0 * AB(T) + 2.0 * AB(T+1)
-   40   CONTINUE
+        ENDDO
         VO = (SO-AB(72))* HD / 3.0 * CO * 0.5
         DO 50  N=1, 6
           SC = AB(0)
-          DO 60  T=1, 71, 2
+          DO T=1, 71, 2
             YC = AB(T) * COS(N*HD*T)
             SC = SC + 4.0 * YC
             YC = AB(T+1) * COS(N*HD*(T+1))
             SC = SC +2.0 * YC
-   60     CONTINUE
+          ENDDO
           VSC(N) = (SC-YC) * HD / 3. *CO
           SS=0.0
-          DO 70  T=1, 71, 2
+          DO T=1, 71, 2
             YS = AB(T) * SIN(N*HD*T)
             SS = SS + 4.0 *YS
             YS = AB(T+1) * SIN(N*HD*(T+1))
             SS = SS + 2.0 * YS
-   70     CONTINUE
+          ENDDO
           VSS(N) = (SS-YS) * HD / 3.0 * CO
    50   CONTINUE
         DD(NE,1) = VO

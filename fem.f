@@ -93,33 +93,34 @@ C::::::: FEM  Computing coefficients of element matrix DH() :::::::
       DIMENSION  DHH(11,11), DSS(3,3), DX(3)
       REAL  NNN
 C----------------------------------------------------INITIALIZATION
-      DO 99  I=1, NA1
+      DO  I=1, NA1
         DK(I) = 0.0
-   99 CONTINUE
-      DO 21  I=1, NA1
-        DO 31  J=1, NA2
+      ENDDO
+      DO  I=1, NA1
+        DO  J=1, NA2
           DH(I,J) = 0.0
-   31   CONTINUE
-   21 CONTINUE
+        ENDDO
+      ENDDO
 C------------------------------------------------------------------
       DO  500  NE=1, NELEM
         NSS = 0
-        DO 10  J=1, 3
-          DO 20  K=J, 3
+        DO  J=1, 3
+          DO  K=J, 3
             NSS = NSS + 1
             DSS(J,K) = DS(NE,NSS)
             DSS(K,J) = DS(NE,NSS)
-   20     CONTINUE
+          ENDDO
           DX(J) = XY(NID(NE,J)+1, 1)
-   10   CONTINUE
+        ENDDO
         DDX = (DX(1) + DX(2) + DX(3)) /3.0
         NSS = 0
-        DO 30  N=1, NDEG
-          DO 40  M=1, NDEG
+		
+        DO  N=1, NDEG
+          DO  M=1, NDEG
             NSS = NSS + 1
             DHH(N,M) = DD(NE,NSS)
-   40           CONTINUE
-   30   CONTINUE
+          ENDDO
+        ENDDO
 C------------------------------------------Substitute into matrix K
         DO 50  J=1, 3
           II = NDD(NE,J) + 1
@@ -131,10 +132,10 @@ C------------------------------------------Substitute into matrix K
           END   IF
           IF(INT(NOD(NE,4)/100) .NE. 3)  GO TO  200
           DDX2 = DDX + XY(II,1) / 3.0 
-          DO 60  K=1, NDEG
+          DO  K=1, NDEG
             DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1*DDX2-DC(NE,K)
             DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1*DDX2
-   60     CONTINUE
+          ENDDO
   200     CONTINUE
           DO 70  K=1, 3
             NNN=1.0
@@ -148,16 +149,17 @@ C------------------------------------------Substitute into matrix K
             END IF
 C-------------------------------- Substitute into band matrix DH()
             DCON= DSIG1 * DSIG2 * DSS(J,K)
-            DO 80  M=1, NDEG                        
-              DO 90  N=1, NDEG
+            DO  M=1, NDEG                        
+              DO  N=1, NDEG
                 NL = NLOW + M - 1
                 NC = NCOL + N - 1
                 NC1 = NC - NL + NB
                 CON = DHH(M,N) * DCON + DN(M,N) * DS(NE,18) * NNN       
 C               CON = DHH(M,N) * DCON
                 DH(NL,NC1) = DH(NL,NC1) + CON
-   90         CONTINUE
-   80       CONTINUE
+              ENDDO
+            ENDDO
+			
    70      CONTINUE
    50   CONTINUE
   500 CONTINUE
