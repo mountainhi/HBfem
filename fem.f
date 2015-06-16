@@ -91,7 +91,15 @@ C     &        DS(NA3,18), DCS(NA3), DB(NA3, 22), DD(NA3, NA6), NOD(0:NA4,4),
 C     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
 C     &        DMUO, DOMEG, DPI, ITR, TOTAL, 
 C     &        DN(11,11), DBH(11,4)
+C---------------------
+C.... External
+C     DS()
+C     DSS()
+C     XY()
+C     DDX()
+C 
 C******************************************************************
+C.... Internal 
 C     DH(I,J) :  MATRIX          (NOB, NB)
 C     DK(I)   :  FORCED VECTOR   (NOB)
 C     DA(I)   :  POTENTIAL       (NOB)
