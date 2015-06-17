@@ -14,7 +14,7 @@ C         &                 DN(11, 11), DBH(11, 4)
 C
         IF (ITR.EQ.1)  THEN
          PRINT '(30X,"Initial values were used when calculation(current)")'
-         PRINT '(30X,"?????????????????????????")'
+         PRINT '(30X,"first results for current calculation")'
          PRINT '(30X,"?????????????????????????")'
            GOTO  70
         END  IF
@@ -37,10 +37,10 @@ C
         ENDDO
         DO I=1,NOM
 C--------------------------------------------------------------DEBUG
-               IF  (DAA(I).EQ.0.)  THEN
-               PRINT *,'DAA(',i,')=0.'
-               STOP
-               END IF
+              IF  (DAA(I).EQ.0.)  THEN
+              PRINT *,'DAA(',i,')=0.'
+              STOP
+              END IF
 C--------------------------------------------------------------
               DERR=(DA(I) - DAA(I))/DAMAX
 C--------------------------------------------------------------DEBUG
@@ -53,8 +53,8 @@ C----------------------------------------------------------
               NN1=NN1+1
               NONC= NONC+1
               END IF
-          ENDDO
-C----------------------------------------------------------DC????
+        ENDDO
+C----------------------------------------------------------Test on DC
        DO  30 I=1, NELEM
            IF (INT(NOD(I,4) /100).NE.3)  GOTO 30
            IF (NOD(I,4).EQ.300)  GOTO 30
@@ -67,39 +67,44 @@ C----------------------------------------------------------DC????
               NONC2=NONC2+1
 C------------------------------------------------------------DEBUG
 C                IF  (ITR.GT.30)
-C     &          PRINT *,'DC(I,J)??????,I=', I,'J=', J
+C     &          PRINT *,'DC(I,J) does not converge,I=', I,'J=', J
 C-----------------------------------------------------------
               END IF
             ENDDO
    30  CONTINUE
-        PRINT '(5X,"  A?????????=", I6, 5X, "??=", I6)'
-      &       , NONC, NOM
-        PRINT '(5X,"  A?????????=", I6, 5X, "??=", I6)'
-      &       , NONC2, NSOSU*NDEG
+   
+   
+        PRINT '(5X,"  The number of non-convergence point of A =",
+     &	  	I6, 5X, "Total =", I6)'
+     &       , NONC, NOM
+        PRINT '(5X,"  Average number of non-convergence point of A =",
+     &		I6, 5X, "Total =", I6)'
+     &       , NONC2, NSOSU*NDEG
         IF ((NONC.NE.0). AND. (NONC2.NE.0))  THEN
-        PRINT '(30X," A, ??A ?????????")'
+        PRINT '(30X," A, Aver of A Non-convergence in total")'
         GOTO 90
         ELSE IF ((NONC.EQ.0) THEN
-        PRINT '(30X," A, ??A ?????????")'           
+        PRINT '(30X," A, Aver of A It was all convergence")'           
         GOTO 70
         ELSE IF (NONC.EQ. 0)  THEN
-        PRINT '(30X, "  A???????")'
+        PRINT '(30X, "  A converged")'
         GOTO 90
         ELSE IF (NONC2.EQ.0)  THEN
-        PRINT '(30X, "  A???????")'           
+        PRINT '(30X, "  Aver of A converged")'           
         GOTO 90
         END IF
-     90 CONTINUE
+   90 CONTINUE
+   
         IF (NN1.NE.0)  THEN
-        PRINT'(10X," ?????AAA=", E9.2,10X," ????="
-       &     'E15.4)',AAA, DRR1/NN1
+        PRINT'(10X," Threshold AAA=", E9.2,10X," Average error ="
+     &     'E15.4)',AAA, DRR1/NN1
         END IF
         IF (NN3.NE.0)  THEN
-        PRINT'(10X," ?????CCC=", E9.2,10X," ????="
-       &     'E15.4)',CCC, DRR3/NN3
+        PRINT'(10X," Threshold CCC=", E9.2,10X," Average error ="
+     &     'E15.4)',CCC, DRR3/NN3
         END IF
-C---------------------------------------------------------???????
-     70 CONTINUE
+C---------------------------------------------------------deceleration relaxation
+   70 CONTINUE
 C       IF (NONC.NE.0)  THEN
 C----------------------------------------------------DF=300.E3
 C       IF (TOTAL+ITR.GE.500)  THEN
@@ -161,9 +166,10 @@ C      IF(TOTAL +ITR.GE.10)  THEN
 C         BBBB=0.4
 C      END IF
       IF ((NONC.NE.0).OR.(NONC2.NE.0))  THEN
-       PRINT '(10X, "????=".E9.2)', BBBB
+       PRINT '(10X, "Deceleration relaxation =".E9.2)', BBBB
       END IF
 C  100 CONTINUE
+C..
        DO I=1,NOM
           DAA(I) = (1. -BBBB)*DAA(I)+BBBB*DA(I)
        ENDDO

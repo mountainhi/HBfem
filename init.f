@@ -110,23 +110,25 @@ C:::: Set initial values ::::
      &        DMUO, DOMEG, DPI, ITR, TOTAL,
      &        DN(11,11), DBH(11,4)
 C----------------------------------------------Initialization
-      DO 20  I=1, NA1
+      DO  I=1, NA1
         DO  J=1, NA2
           DH(I,J)=0.0
         END DO
-   20 CONTINUE
-      DO 40  I=1, NA3
+      ENDDO
+   
+      DO  I=1, NA3
         DO  J=1, NA6
           DD(I,J)=0
         END DO
         DO  K=1, NDEG
           DCPRE(I,K)=0.0
         END DO
-   40 CONTINUE
+      ENDDO
+C.... Convergence points
       NONC=0
       NONC2=0
 C--- Set values to matrix DN ---
-C--- Matrix 'N' in the formulation
+C--- Harmonic Matrix 'N'
 C---  |0 -1             .....|
 C---  |1  0                  |
 C---  |     0 -3             |
