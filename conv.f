@@ -25,13 +25,16 @@ C
         NN4=0
         NONC=0
         NONC2=0
+		
         DRR1=0.
         DRR2=0.
         DRR3=0.
         DRR4=0.
-        DAMAX=0.
+
         DCMAX=0.
         NSOSU=0
+		
+        DAMAX=0.
         DO I=1,NOM
            IF  (ABS(DA(I)).GT.DAMAX)   DAMAX=ABS(DA(I))
         ENDDO
