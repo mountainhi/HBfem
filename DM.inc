@@ -1,5 +1,6 @@
       PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
 
+	  parameter dpi = 3.1415927
 C*****     AAA is relative error bound
 	  COMMON  AAA, BBB, CCC, NCOIL, NOWA,
 C***** !convergence test
@@ -12,6 +13,7 @@ C***** !matrix and vectors
 C***** !geometric info
      &     NOD(0:NA4,4),XY(NA5,2), 
      &     DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
+C*****  parameters
      &     DMUO, DOMEG, DPI, ITR, TOTAL, 
 C***** !harmonic balance N matrix
      &     DN(11,11), DBH(11,4)

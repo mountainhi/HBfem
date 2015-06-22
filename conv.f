@@ -63,7 +63,7 @@ C----------------------------------------------------------Test on DC
            IF (NOD(I,4).EQ.300)  GOTO 30
            NSOSU=NSOSU+1
            DO  40 J=2, NDEG
-              DERR2=(NC(I,J) - DCPRE(I,J))/DC(I,J)
+              DERR2=(DC(I,J) - DCPRE(I,J))/DC(I,J)
               IF(ABS(DERR2).GT.CCC)  THEN
               DRR3=DRR3+ABS(DERR2)
               NN3=NN3+1
@@ -84,10 +84,10 @@ C-----------------------------------------------------------
      &		I6, 5X, "Total =", I6)'
      &       , NONC2, NSOSU*NDEG
         IF ((NONC.NE.0). AND. (NONC2.NE.0))  THEN
-        PRINT '(30X," A, Aver of A Non-convergence in total")'
+        PRINT '(30X," A, Aver of A, Not all converged")'
         GOTO 90
-        ELSE IF ((NONC.EQ.0) THEN
-        PRINT '(30X," A, Aver of A It was all convergence")'           
+        ELSE IF((NONC.EQ.0).AND.(NONC2.EQ.0)) THEN
+        PRINT '(30X," A and Aver of A.  All converged")'           
         GOTO 70
         ELSE IF (NONC.EQ. 0)  THEN
         PRINT '(30X, "  A converged")'
@@ -164,7 +164,7 @@ C           BBBB=BBB*0.01
 C       END IF
 C     END IF
 C-------------------------------------------------------
-C    BBB=.5
+      BBBB=.5
 C      IF(TOTAL +ITR.GE.10)  THEN
 C         BBBB=0.4
 C      END IF
