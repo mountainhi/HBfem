@@ -1,21 +1,22 @@
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C:::::::::::::::: DMATA  Create harmonic matrix  ::::::::::::::::::
       SUBROUTINE  DMATA
-      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
-      COMMON  AAA, BBB, NONC, CCC, NON2, NCOIL, NHOWA, 
-     &        NPO1,NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
-     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
-     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),           
-     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
-     &        DMUO, DOMEG, DPI, ITR, TOTAL, 
-     &        DN(11,11), DBH(11,4)
+      include 'dm.inc'
+!      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
+!      COMMON  AAA, BBB, NONC, CCC, NON2, NCOIL, NHOWA, 
+!     &        NPO1,NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
+!     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
+!     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),           
+!     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
+!     &        DMUO, DOMEG, DPI, ITR, TOTAL, 
+!     &        DN(11,11), DBH(11,4)
       DIMENSION  AB(0:72), VSC(4), VSS(4)
 C
       DO 10  NE=1, NELEM
         IF (INT(NOD(NE,4) / 100) .EQ. 2)  GO TO 1000
-        DO 12  K=1, 25
+        DO K=1, 25
           DD(NE,K) = 0.0
-   12   CONTINUE
+        ENDDO
         DD(NE,1) = 1.0 / DMUO
         DD(NE,7) = DD(NE,1)
         DD(NE,13) = DD(NE,1)
@@ -39,9 +40,9 @@ C
           AB(NT) = DBH(1,1)
    30   CONTINUE
         SO = AB(0)
-        DO 40  NT=1, 71, 2
+        DO NT=1, 71, 2
           SO = SO + 4.0 * AB(NT) + 2.0 * AB(NT+1)
-   40   CONTINUE
+        ENDDO
         VO=(SO - AB(72)) * HD/3.0 * CO * 0.5
 C------------------------------------------------------------------
 C       IF (NE .EQ. 48)  THEN
@@ -51,23 +52,23 @@ C------------------------------------------------------------------
         DO 50  N=1, 4
           DRN = FLOAT(N)
           SC = AB(0)
-          DO 60  NT=1, 71, 2
+          DO NT=1, 71, 2
             DT = FLOAT(NT)
             YC = AB(NT) * COS(DRN*HD*DT)
             SC = SC+4. *YC
             YC = AB(NT+1)*COS(DRN*HD*(DT+1.0))
             SC = SC + 2.0 * YC
-   60     CONTINUE
+          ENDDO
           VSC(N) = (SC - YC) * HD/3.0 * CO
 C         SS = AB(0)
           SS = 0.0
-          DO 70  NT=1, 71, 2
+          DO NT=1, 71, 2
             DT = FLOAT(NT)
             YS = AB(NT) * SIN(DRN * HD * DT)
             SS = SS + 4.0 * YS
             YS = AB(NT+1) * SIN(DRN*HD*(DT+1.0))
             SS = SS + 2.0 * YS
-   70     CONTINUE
+          ENDDO
           VSS(N) = (SS-YS) * HD /3.0 * CO
 C--------------------------------------------------------------------------
 C         IF(NE .EQ. 48)  THEN
@@ -76,6 +77,7 @@ C           PRINT '(1X, "VSS(", I1, ")=", E14.6)', N, VSS(N)
 C         END IF 
 C------------------------------------------------------------------------------
   50    CONTINUE
+  
         DD(NE,1) = VO
         DD(NE,2) = VSS(1) * 0.5
         DD(NE,3) = VSC(1) * 0.5

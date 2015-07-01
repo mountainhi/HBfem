@@ -1,6 +1,7 @@
       PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
 
 	  parameter dpi = 3.1415927
+	  parameter df  = 1.0363E6
 C*****     AAA is relative error bound
 	  COMMON  AAA, BBB, CCC, NCOIL, NOWA,
 C***** !convergence test

@@ -24,12 +24,14 @@ C     MAX=80
       MAX=40
 C     DF=10.
       DF=1.0363E6
-      DF=1.E6
+C      DF=1.E6
+C     NDEG = 5...COMPUTE TO 2ND HARMONIC, 
+C            7...TO 3RD harmonic,  
+C            11...TO 5TH harmonic. 
       NDEG=5
-C          5...COMPUTE TO 2ND HARMONIC,  7...TO 3RD,  11...TO 5TH 
-C      NHOWA=2
+C      NHOWA = 1...Initialize DAA = 0.   2... INPUT FROM FILE
       NHOWA = 1  
-C          1... DAA = 0.   2... INPUT FROM FILE
+	  
       AAA=0.005
       BBB=0.1
       CCC=0.005
@@ -59,7 +61,9 @@ C.....Create HARMONIC MATRIX
       CALL DMATA
 C     CALL CMATH
       ELSE IF (NDEG. EQ. 7 ) THEN  
-            CALL  DMATB
+          CALL  DMATB
+      ELSE IF (NDEG.EQ.11) THEN
+          CALL  DMATC
       END IF
 	  
       CALL  FEMP
