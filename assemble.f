@@ -95,30 +95,34 @@ C         DS(I,18) = DBH(NOD(I,4)-199, 4)*DOMEG*DCS(I)/12.0
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C:: SMATP  Computing coefficients in Matrix DS for symmetric field
       SUBROUTINE SMATP
-      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
-      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
-     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF, 
-     &        DH(NA1, NA2), DK(NA1), DAA(NA1), DA(NA1),
-     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
-     &        XY(NA5,2), DENTYU(1,11), DC(NA3,11), DCPRE(NA3,11), 
-     &        DNUO, DOMEG, DPI, ITR, TOTAL,
-     &        DN(11,11), DBH(11,4)
-      DIMENSION DX(3), DY(30, DQ(3), DR(3)
+      include 'dm.inc'
+C       PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
+C      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
+C     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF, 
+C     &        DH(NA1, NA2), DK(NA1), DAA(NA1), DA(NA1),
+C     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
+C     &        XY(NA5,2), DENTYU(1,11), DC(NA3,11), DCPRE(NA3,11), 
+C     &        DNUO, DOMEG, DPI, ITR, TOTAL,
+C     &        DN(11,11), DBH(11,4)
+      DIMENSION DX(3), DY(3), DQ(3), DR(3)
 C
       DO 10  I=1, NELEM
+	  
         DO  J=1, 3
            DX(J) = XY(NOD(I,J)+1,1)
            DY(J) = XY(NOD(I,J)+1,2)
         END DO
+C.......Compute the area of elements
         DCS(I) = ( DX(2)*DY(3)+DX(1)*DY(2)+DX(3)*DY(1)
      &            - DX(2)*CY(1) - DX(1)*DY(3) - DX(3)*DY(2) )*.5D0
 C-------------------------------------------------------------DEBUG
         IF (DCS(I) .EQ. 0.0) THEN
-          PRINT *, 'MENSEKI=0  ',I
+          PRINT *, 'Area = 0  ',I
           PRINT *, DX(1), DX(2), DX(3), DY(1), DY(2), DY(3)
           STOP
         END IF
 C-------------------------------------------------------------------------------------------------
+C------    b (DQ) and c(DR) in the interpolating function
         DO  J=1, 3
           DQ(J) = DY(MOD(J,3)+1) - DY(MOD(J+1,3)+1)
           DR(J) = DX(MOD(J+1,3)+1) - DX(MOD(J,3)+1)
@@ -126,6 +130,7 @@ C-------------------------------------------------------------------------------
 C-----------   Symmetric field 1   ------------
         DDX = (DX(1)+DX(2)+DX(3))/3.0
 C
+C.......  1/4*delta*[S]
         N=1
         DO   J=1, 3
           DO  K=J, 3
@@ -166,7 +171,7 @@ C-------------------------------------------------------------------------------
           DC11 = 0.0
    70     CONTINUE
         END IF 
-C --------   Computing current density   ----------
+C --------   current density calculation   ----------
 C---------   Symmetric field 2    ----------
         DCON = DCS(I)/4.0
 C------------------------------------------------------------------
@@ -299,14 +304,15 @@ C
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C::::
       SUBROUTINE  CMATP
-      PARAMETER (NA1=1995,NA2 = 249,NA3=755,NA4=755,NA5=400,NA6=121)
-      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
-     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF, 
-     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
-     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4)
-     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11), 
-     &        DMUO , DOMEG, DPI, ITR, TOTAL,
-     &        DN(11,11), DBH(11,4)
+      include 'dm.inc'
+C      PARAMETER (NA1=1995,NA2 = 249,NA3=755,NA4=755,NA5=400,NA6=121)
+C      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
+C     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF, 
+C     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
+C     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4)
+C     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11), 
+C     &        DMUO , DOMEG, DPI, ITR, TOTAL,
+c     &        DN(11,11), DBH(11,4)
       DIMENSION  DCC (NA3,11), DCCC(NA3,11), S(9), DDA(3,11), DX(3)
 C 
       DO I=1, NELEM
@@ -315,7 +321,7 @@ C
         END DO
       END DO
   
-      DO 109  I=1, NCOIL
+      DO I=1, NCOIL
         S(I) = 0.0
         DO J=1, NDEG
           DCC(I,J) = 0.0
@@ -352,14 +358,14 @@ C         PRINT '(10X,"DCCC(",I2,",",I2,")=",E15.4)',I,J,DCCC(I,J)
 C 310   CONTINUE
 C 300 CONTINUE
 C ---------------------------------------------------------------------
-      DO 10 I=1, NELEM
+      DO I=1, NELEM
         IF (INT(NOD(I,4) / 100) .NE. 3) GOTO  10
         IF (NOD(I,4) .DQ. 300) GOTO 10
         J = NOD(I,4) - 300
         DO K=2, NDEG
           DCC(J,K) = DCC(J,K) + DCCC(K,K) * DCS(I)
         END DO
-   10 CONTINUE
+      ENDDO
 C ------------------------------------------------------------DEBUG
 C     DO 340  I=1, NCOIL
 C       DO 330  J=1, NDEG

@@ -37,6 +37,7 @@ C      NHOWA = 1...Initialize DAA = 0.   2... INPUT FROM FILE
       CCC=0.005
 C      DPI=3.141593
       DMUO=4.E-7*DPI
+C     DOMEG is the fundamental frequency
       DOMEG=2.*DPI*DF
 C
       CALL  RDATA

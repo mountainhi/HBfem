@@ -46,7 +46,7 @@ C-----Read the DBH?
       READ(15,9900) CHAR
       READ(15,*) (DBH(1,J), J=1,2)
       PRINT *
-      PRINT '(1P(2E15.4))', (DBH (1,J), J=1,2)
+      PRINT '(1P,(2E15.4))', (DBH (1,J), J=1,2)
       PRINT *
 C---  Current density source (J) ---
       READ(15,9900) CHAR
@@ -55,7 +55,7 @@ C---  Current density source (J) ---
         READ(15,*)  (DENRYU(KK,J), J=1, NDEG)
         IF (NDEG .EQ. 5) THEN 
           PRINT '(1P(3E15.4))', (DENRYU(KK,J), J=1,3)
-          PRINT '(1P(2E15.4))', (DENTYU(KK,J), J=4,5)
+          PRINT '(1P(2E15.4))', (DENRYU(KK,J), J=4,5)
           ELSE IF (NDEG .EQ. 7) THEN 
             PRINT '(1P(3E15.4))', (DENRYU(KK,J), J=1,3)
             PRINT '(1P(3E15.4))', (DENRYU(KK,J), J=4,7)
