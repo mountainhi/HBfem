@@ -302,7 +302,7 @@ C -----------------------------------------------------------------
 C
 C
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C::::
+C::::Computing coefficients in Matrix DC
       SUBROUTINE  CMATP
       include 'dm.inc'
 C      PARAMETER (NA1=1995,NA2 = 249,NA3=755,NA4=755,NA5=400,NA6=121)
@@ -328,7 +328,7 @@ C
         END DO
       END DO
   
-      DO 60  I=1, MELEM
+      DO 60  I=1, NELEM
         IF (INT(NOD(I,4)/100) .NE. 3) GOTO 60
         IF (NOD(I,4) .EQ. 300) GOTO 60
         J = NOD(I,4) - 300

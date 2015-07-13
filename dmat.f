@@ -1,5 +1,5 @@
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C:::::::::::::::: DMATA  Create harmonic matrix  ::::::::::::::::::
+C::::::           DMATA  Create harmonic matrix(DD)       :::::::::
       SUBROUTINE  DMATA
       include 'dm.inc'
 !      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
