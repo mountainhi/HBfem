@@ -92,14 +92,13 @@ C     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
 C     &        DMUO, DOMEG, DPI, ITR, TOTAL, 
 C     &        DN(11,11), DBH(11,4)
 C---------------------
-C.... External
-C     DS()
-C     DSS()
-C     XY()
+C.... Internal
+C     DX ()
+C     DHH()
 C     DDX()
 C 
 C******************************************************************
-C.... Internal 
+C....  
 C     DH(I,J) :  MATRIX          (NOB, NB)
 C     DK(I)   :  FORCED VECTOR   (NOB)
 C     DA(I)   :  POTENTIAL       (NOB)
@@ -125,11 +124,11 @@ C------------------------------------------------------------------
             DSS(J,K) = DS(NE,NSS)
             DSS(K,J) = DS(NE,NSS)
           ENDDO
-          DX(J) = XY(NID(NE,J)+1, 1)
+          DX(J) = XY(NOD(NE,J)+1, 1)
         ENDDO
         DDX = (DX(1) + DX(2) + DX(3)) /3.0
         NSS = 0
-		
+
         DO  N=1, NDEG
           DO  M=1, NDEG
             NSS = NSS + 1
@@ -138,7 +137,7 @@ C------------------------------------------------------------------
         ENDDO
 C------------------------------------------Substitute into matrix K
         DO 50  J=1, 3
-          II = NDD(NE,J) + 1
+          II= NOD(NE,J)+1
           NLOW = NDEG * (II-1) + 1
           IF ((II .GT. NPO1) .AND. (II .LE. NPO2))  THEN
             GOTO 50
@@ -149,9 +148,10 @@ C------------------------------------------Substitute into matrix K
           DDX2 = DDX + XY(II,1) / 3.0 
           DO  K=1, NDEG
             DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1*DDX2-DC(NE,K)
-            DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1*DDX2
+C            DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1*DDX2
           ENDDO
   200     CONTINUE
+  
           DO 70  K=1, 3
             NNN=1.0
             IF (J .EQ. K)  NNN=2.0                                                           
