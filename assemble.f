@@ -19,15 +19,17 @@ C
      &            -DX(2)*DY(1)-DX(1)*DY(3)-DX(3)*DY(2))*0.5D0
 C-------------------------------------------------------------DEBUG
         IF (DCS(I) .EQ. 0.0) THEN 
-          PRINT *, 'NENSEKI=0   ',I
+          PRINT *, 'area =0   ',I
           PRINT *, DX(1), DX(2), DX(3), DY(1), DY(2), DY(3)
           STOP
         END IF
-C---------------------------------------------------------------------------------------
-        DO 30  J=1, 3
+C---------------------------------------------------------------------
+C------    b (DQ) and c(DR) in the interpolating function
+        DO J=1, 3
           DQ(J) = DY(MOD(J,3)+1) - DY(MOD(J+1,3)+1)
-          DR(J) = SX(MOD(J+1,3)+1) - DX(MOD(J, 3)+1)
-   30   CONTINUE
+          DR(J) = DX(MOD(J+1,3)+1) - DX(MOD(J, 3)+1)
+        ENDDO
+   
         N=1
         DO 40  J=1, 3
           DO 50  K=J, 3
@@ -35,6 +37,7 @@ C-------------------------------------------------------------------------------
             N=N+1
    50     CONTINUE
    40   CONTINUE
+c...    Current density source
         IF (INT(NOD(I,4)/100) .EQ. 3) THEN
           DC1 = DENRYU(1,1)
           DC2 = DENRYU(1,2)
@@ -66,7 +69,8 @@ C-------------------------------------------------------------------------------
           DC11=0.0
    70     CONTINUE
         END IF 
-C-------------  Computing current density  -------------
+C-------------  Calculation of current density  -------------
+C---    K = delta * {J1s J1c .....} /3
         DCON = DCS(I) * 0.3333333333333333
         DS(I,7) = DC1 * DCON
         DS(I,8) = DC2 * DCON
@@ -93,7 +97,7 @@ C         DS(I,18) = DBH(NOD(I,4)-199, 4)*DOMEG*DCS(I)/12.0
       RETURN
       END
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C:: SMATP  Computing coefficients in Matrix DS for symmetric field
+C:: SMATP  Computing coefficients in Matrix DS for axially symmetric
       SUBROUTINE SMATP
       include 'dm.inc'
 C       PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
@@ -204,45 +208,52 @@ C------------------------------------------------------
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C::::
       SUBROUTINE  CMAT2
-      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)                                                        
-      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
-     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
-     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
-     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
-     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
-     &        DMUO, NOMEG, DPI, ITR, TOTAL,
-     &        DN(11,11), DBH(11,4)
+      include ' dm.inc'
+C      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)                                                        
+c      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
+C     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
+C     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
+C     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
+C     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
+C     &        DMUO, NOMEG, DPI, ITR, TOTAL,
+C     &        DN(11,11), DBH(11,4)
       DIMENSION  DCC(NA3,11), DCCC(NA3,11), S(9), DDA(3,11)
-C
-      DO 900  I=1, NELEM
-        DO 910  J=1, NDEG
+	  
+C.....initial
+      DO  I=1, NELEM
+        DO  J=1, NDEG
           DCCC(I,J) = 0.0
-  910   CONTINUE
-  900 CONTINUE
-      DO 109  I=1, NCOIL
+        ENDDO
+      ENDDO
+	  
+      DO I=1, NCOIL
         S(I)=0.0
-        DO 110  J=1, NDEG
+        DO  J=1, NDEG
           DCC(I,J)=0.0
-  110   CONTINUE
-  109 CONTINUE
+        ENDDO
+      ENDDO
+C.....	  
       DO 60  I=1, NELEM
+	  
         IF (INT(NOD(I,4)/100) .NE. 3)  GOTO 60
         IF (NOD(I,4) .EQ. 300)  GOTO 60
         J = NOD(I,4)-300
         S(J) = S(J)+DCS(I)
   103   CONTINUE
-        DO 90  J=1,3
+  
+        DO J=1,3
           N = NOD(I,J)
-          DO 100  K=2,NDEG
+          DO K=2,NDEG
             DDA(J, K) = DAA(NDEG * N + K)
-  100     CONTINUE
-   90   CONTINUE
-        DO 101  J=2,NDEG
+          ENDDO
+        ENDDO
+
+        DO J=2,NDEG
           DCCC(I, J) = 0.0
-          DO 102  K=1,3
+          DO K=1,3
             DCCC(I, J) + DDA(K, J)
-  102     CONTINUE
-  101   CONTINUE
+          ENDDO
+        ENDDO
    60 CONTINUE
 C---------------------------------------------------------DEBUG
 C     DO 300  I=1, NELEM
@@ -251,14 +262,14 @@ C         PRINT '(10X,"DCCC(",I2,",",I2,")=",E15.4)',I,J,DCCC(I,J)
 C 310   CONTINUE
 C 300 CONTINUE
 C-------------------------------------------------------------------
-      DO 10  I=1, NELEM
+      DO I=1, NELEM
         IF (INT(NOD(I,4)/100) .NE. 3) GOTO 10
         IF (NOD(I,4) .EQ. 300) GOTO 10
         J = NOD(I,4) - 300
-        DO 108  K=2, NDEG
+        DO  K=2, NDEG
           DCC(J,K) = DCC(J,K) + DCCC(I,K) * DCS(I)
-  108   CONTINUE
-   10 CONTINUE
+        ENDDO
+      ENDDO
 C--------------------------------------------------------------DEBUG
 C     DO 340  I=1, NCOIL
 C       DO 330  J=1, NDEG
@@ -286,9 +297,10 @@ C-------------------------------------------------------------------------------
         DC(I,11) = -5.0 * DOMEG2 * DCC(J,10) / S(J)
         GOTO   107
   104   CONTINUE
-        DO 106  J=1, NDEG
+  
+        DO  J=1, NDEG
           DC(I,J) = 0.0
-  106   CONTINUE
+        ENDDO
   107 CONTINUE
 C ------------------------------------------------------------DEBUG
 C     DO 350  I=1, NELEM

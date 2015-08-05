@@ -45,6 +45,7 @@ C
       END
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C ::  FLUX  Computing of coefficient of flux density from DAA() :::
+C::                   axial symmetric
 C            Matrix DB
       SUBROUTINE  FLUXP
       include 'dm.inc'
