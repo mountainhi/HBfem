@@ -12,34 +12,39 @@ C
      &        DN(11,11), DBH(11,4)
       DIMENSION  DX(3), DY(3), DQ(3), DR(3), DDA(3,11)
 C
+C...  
       DO 10  I=1, NELEM
-        DO 20  J=1,3
+	  
+        DO J=1,3
           DX(J) = XY(NOD(I,J) + 1, 1)
           DY(J) = XY(NOD(I,J) + 1, 2)
-          DO 60  K=1, NDEG
+          DO  K=1, NDEG
             N = NOD(I,J)
             IF (N .LT. NPO1)  THEN
               DDA(J,K) = DAA(NDEG * N + K)
             ELSE
               DDA(J,K) = 0.0
             END IF
-   60     CONTINUE
-   20   CONTINUE
-        DO 30  J=1,3
+          ENDDO
+        ENDDO
+   
+        DO J=1,3
           DQ(J) = DY(MOD(J,3) + 1) - DY(MOD(J+1,3) + 1)
           DR(J) = DX(MOD(J+1,3) + 1) - DX(MOD(J,3) + 1)
-   30   CONTINUE
-        DO  40  J=1, NDEG
+        ENDDO
+		
+        DO  J=1, NDEG
           JJJ = J + NDEG
           DB(I,J) = 0.0
           DB(I,JJJ) = 0.0
-          DO 50  K=1,3
+          DO K=1,3
             DB(I,J) = DB(I,J) + DR(K) * DDA(K,J)
             DB(I,JJJ) = DB(I,JJJ) - DQ(K) * DDA(K,J)
-   50     CONTINUE
+          ENDDO
           DB(I,J) = DB(I,J) * 0.5 / DCS(I)
           DB(I,JJJ) = DB(I,JJJ) * 0.5 / DCS(I)
-   40   CONTINUE
+        ENDDO
+   
    10 CONTINUE
       RETURN 
       END
