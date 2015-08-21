@@ -12,6 +12,8 @@ C::::::           DMATA  Create harmonic matrix DD()       :::::::::
 !     &        DN(11,11), DBH(11,4)
       DIMENSION  AB(0:72), VSC(4), VSS(4)
 C
+C----- Reluctivity[D] , [elements][25] is
+C----- treated as 5 * 5 square matrix in second dimension
       DO 10  NE=1, NELEM
         IF (INT(NOD(NE,4) / 100) .EQ. 2)  GO TO 1000
         DO K=1, 25
@@ -24,9 +26,10 @@ C
         DD(NE,25) = DD(NE,1)
         GO TO  9999
  1000   CONTINUE
+ 
         HD = 2.0 * DPI / 72.0
         CO = 1.0 / DPI
-        DO 30  NT=0, 72
+        DO NT=0, 72
           DT = FLOAT(NT)
           SIN1 = SIN(HD*DT)
           COS1 = COS(HD*DT)
@@ -38,7 +41,7 @@ C
      &          +DB(NE,10)*COS2
           BT = SQRT(BX*BX + BY*BY)
           AB(NT) = DBH(1,1)
-   30   CONTINUE
+        ENDDO
         SO = AB(0)
         DO NT=1, 71, 2
           SO = SO + 4.0 * AB(NT) + 2.0 * AB(NT+1)
@@ -126,6 +129,7 @@ C::::::::::::::::: DMATB  Create harmonic matrix ::::::::::::::::::
      &        DN(11,11), DBH(11,4)
       DIMENSION  AB(0:72), VSC(6), VS(6)
 C
+C----- [elements][7*7]
       DO 10 NE=1, NELEM
         IF (INT(NOD(NE,4)/100) .EQ. 2)  GO TO 1000
         DO  K=1, 49
@@ -260,21 +264,21 @@ C-------------------------------------------------------------------------------
       END
 C:::::::::::::::::::::::::::::DMATC Creating a harmonic matrix:::::::::::::::::::::::::
           SUBROUTINE        DMATC
-           PARAMETER  (NA1=1995, NA2=249, NA3=755, NA4=744, NA5=400, NA6=121)
-           COMMON     AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
-         &                      NPO1, NOM, NPO2, NPOR, NELEM, NB, NDEG, NDE, DF, 
-         &                      DH(NA1, NA2), DK(NA1), DAA(NA1), DA(NA1), 
-         &                 DS(NA3, 18), DCS(NA3), DB(NA3, 22), DD(NA3, NA6), NOD(0:NA4,4),
-         &                 XY(NA5, 2), DENRYU(1, 11), DC(NA3, 11), DCPRE(NA3, 11),
-         &                 DMUO, DOMEG, DPI, ITR, TOTAL, 
-         &                 DN(11, 11), DBH(11, 4)
-            DIMENSION    AB(0: 72), VSC(10), VSS(10)
+      PARAMETER  (NA1=1995, NA2=249, NA3=755, NA4=744, NA5=400, NA6=121)
+      COMMON     AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
+     &               NPO1, NOM, NPO2, NPOR, NELEM, NB, NDEG, NDE, DF, 
+     &               DH(NA1, NA2), DK(NA1), DAA(NA1), DA(NA1), 
+     &   DS(NA3, 18), DCS(NA3), DB(NA3, 22), DD(NA3, NA6), NOD(0:NA4,4),
+     &           XY(NA5, 2), DENRYU(1, 11), DC(NA3, 11), DCPRE(NA3, 11),
+     &           DMUO, DOMEG, DPI, ITR, TOTAL, 
+     &           DN(11, 11), DBH(11, 4)
+       DIMENSION    AB(0: 72), VSC(10), VSS(10)
 C***********double precision*************
 C         IMPLICIT  REAL* 8(D)
 C
 C <<<<<<<<<<<<<<Loop over elements>>>>>>>>>>>>>>>
            DO  10  NE=1, NELEM
-           IF  ( INT(NOD(NE, 4)  / 100). EQ. 2)              GO    TO   1000
+           IF  ( INT(NOD(NE, 4)  / 100). EQ. 2)    GOTO   1000
 C
 C------------------Air, coil space---------------------
                  DO   12  K=1, NA6
@@ -308,12 +312,13 @@ C--------------------Iron core 200 < = NOD(I,4) < =299-----------------------
             COS4 = COS(4. *HD*T)
             SIN5= SIN (5. *HD* T)
             COS5 = COS(5. *HD*T)
-            BX = DB(NE, 1) + DB(NE, 2) * SIN1+ DB(NE, 3) * COS1 + DB (NE, 4) * SIN 2
-     &           + DB (NE, 5) * COS 2 + DB (NE, 6) * SIN 3 + DB (NE, 7) * COS 3
+         BX = DB(NE, 1) + DB(NE, 2) * SIN1+ DB(NE, 3) * COS1 + DB (NE, 4) * SIN 2
+     &    + DB (NE, 5) * COS 2 + DB (NE, 6) * SIN 3 + DB (NE, 7) * COS 3
      & + DB(NE, 8) * SIN4 + DB(NE,9) * COS4 + DB (NE,10) * SIN5 + DB (NE,11) * COS5
-           BY = DB(NE, 12)+ DB(NE, 13) * SIN1 + DB(NE, 14) *COS1 + DB(NE, 15) *SIN2
+         BY = DB(NE, 12)+ DB(NE, 13) * SIN1 + DB(NE, 14) *COS1 + DB(NE, 15) *SIN2
      &            +DB(NE, 16) * COS2 + DB (NE, 17) * SIN3 + DB(NE, 18) * COS3
      & + DB(NE,19) * SIN4 + DB(NE,20) * COS4 + DB(NE,21) * SIN5 + DB(NE, 22) * COS5 
+	 
 C        DBX =HD * (DB(NE, 2) *COS1 - DB(NE, 3) * SIN1 + 2 *DB(NE, 4) * COS2
 C   &              - 2 * DB(NE,5) *SIN2 + 3* DB(NE,6) *COS3 - 3 *DB(NE,7) * SIN 3)
 C        DBY =HD * (DB(NE, 9) *COS1 - DB(NE, 10) * SIN1 + 2 *DB(NE,11) * COS2
@@ -370,9 +375,9 @@ C         AB(T) = 20. +100. *BT *BT + . 5 * (2. *BX*DBX + 2. *BY*DBY)
           SS= SS + 4.*YS
           YS = AB(T +1) * SIN(N*HD*(T+1))
           SS = SS +2. *YS
-  70   CONTINUE
+   70   CONTINUE
          VSS(N) = (SS-YS) * HD/3.0 *CO
-  50    CONTINUE
+   50    CONTINUE
          DD(NE, 1) = VO
          DD(NE, 2) = VSS(1) *. 5
          DD(NE, 3) = VSS(1) *. 5
