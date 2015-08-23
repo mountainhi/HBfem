@@ -19,21 +19,21 @@ C     DHH()
 C     DDX()
 C 
 C******************************************************************
-C....  
+C....    DH (,) * DA () = DK ()
 C     DH(I,J) :  MATRIX          (NOB, NB)
 C     DK(I)   :  FORCED VECTOR   (NOB)
 C     DA(I)   :  POTENTIAL       (NOB)
 C     NOM     :  NUMBER OF UNKNOW POTENTIAL
 C     NB      :  BAND  WIDTH
 C----------------------------------------------------INITIALIZATION
-      DO 99  I=1, NA1
+      DO I=1, NA1
         DK(I) = 0.0
-   99 CONTINUE
-      DO 21  I=1, NA1
-        DO 31  J=1, NA2
+      ENDDO
+      DO I=1, NA1
+        DO  J=1, NA2
           DH(I,J) = 0.0
-   31   CONTINUE
-   21 CONTINUE
+        ENDDO
+      ENDDO
 C------------------------------------------------------------------
       DO 500  NE=1, NELEM
         NSS=0
