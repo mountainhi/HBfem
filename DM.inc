@@ -9,7 +9,8 @@ C*****     AAA is relative error bound
 	  COMMON  AAA, BBB, CCC, NCOIL, NOWA,
 C*****    convergence test
      &     NONC, NONC2,   
-C*****   Size of the problems
+C*****   Size of the problem
+C*****     NPO3 : number of nodes
      &     NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
 C*****   matrix and vectors
      &     DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),

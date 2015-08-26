@@ -1,5 +1,5 @@
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C::::: FEM  Computing of coefficients of element matrix DH() ::::::
+C::::: FEM  Assemble the matrices DH() , DK()                ::::::
       SUBROUTINE  FEM
       include 'dm.inc'
 C      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
@@ -19,7 +19,7 @@ C     DHH()
 C     DDX()
 C 
 C******************************************************************
-C....    DH (,) * DA () = DK ()
+C....    DH ( NA1,NA2) * DA () = DK (NA1)
 C     DH(I,J) :  MATRIX          (NOB, NB)
 C     DK(I)   :  FORCED VECTOR   (NOB)
 C     DA(I)   :  POTENTIAL       (NOB)
@@ -36,36 +36,41 @@ C----------------------------------------------------INITIALIZATION
       ENDDO
 C------------------------------------------------------------------
       DO 500  NE=1, NELEM
-        NSS=0
-        DO 10  J=1, 3
-          DO 20  K=J, 3
+        NSS=0		
+        DO  J=1, 3
+          DO  K=J, 3
             NSS = NSS + 1
             DSS(J,K) = DS(NE, NSS)
             DSS(K,J) = DS(NE, NSS)
-   20     CONTINUE
-   10   CONTINUE
+          ENDDO
+        ENDDO
+		
         NSS=0
-        DO 30  N=1, NDEG
-          DO 40  M=1, NDEG
+        DO  N=1, NDEG
+          DO  M=1, NDEG
             NSS = NSS + 1
             DHH(N,M) = DD(NE, NSS)
-   40     CONTINUE
-   30   CONTINUE
+          ENDDO
+        ENDDO
 C----------------------------------------- Substitute into Matrix K
         DO 50  J=1, 3
           II = NOD(NE,J) + 1
           NLOW = NDEG * (II-1) + 1
+		  
           IF ((II .GT. NPO1) .AND. (II .LE. NPO2)) THEN
             GOTO 50
           ELSE
             DSIG1 = 1.0
           END IF
           IF (INT(NOD(NE,4) / 100) .NE. 3)   GO TO  200
-          DO 60  K=1, NDEG
+		  
+          DO  K=1, NDEG
             DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1-DC(NE,K)    
 C           DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1
-   60     CONTINUE
+          ENDDO
+   
   200     CONTINUE
+  
           DO 70  K=1, 3
             NNN = 1.0
             IF (J .EQ. K)  NNN=2.0
@@ -78,19 +83,21 @@ C           DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1
             END IF
 C------------------------------- Substitute into band matrix DH()
             DCON = DSIG1 * DSIG2 * DSS(J,K)
-            DO 80  M=1, NDEG
-              DO 90  N=1, NDEG
+            DO M=1, NDEG
+              DO N=1, NDEG
                 NL = NLOW + M -1
                 NC = NCOL + N -1
                 NC1 = NC - NL + NB
                 CON = DHH(M,N) * DCON + DN(M,N) * DS(NE,18) * NNN
 C               CON = DHH(M,N) * DCON
                 DH(NL,NC1) = DH(NL,NC1) + CON
-   90         CONTINUE
-   80       CONTINUE
+              ENDDO
+            ENDDO
+   
    70     CONTINUE
    50   CONTINUE 
-  550 CONTINUE
+   
+  500 CONTINUE
       RETURN
       END
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

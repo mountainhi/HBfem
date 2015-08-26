@@ -1,16 +1,15 @@
 C:::   RDATA  Read coefficients and data for for vectors ::::::::::
       SUBROUTINE RDATA
-	  
+      include 'dm.inc'
       implicit real*8 (A-h,o-z) integer (i-n)
-	  
-      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
-      COMMON AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,  
-     &       NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, NF,
-     &       DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
-     &       DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
-     &       XY(NA5,2), DENTYU(1,11), DC(NA3,11), DCPRE(NA3,11),
-     &       DMUO, DONEG, DPI, ITR, TOTAL, 
-     &       DN(11,11), DBH(11,4)
+C      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
+C      COMMON AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,  
+C     &       NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, NF,
+C     &       DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
+C     &       DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
+C     &       XY(NA5,2), DENTYU(1,11), DC(NA3,11), DCPRE(NA3,11),
+C     &       DMUO, DONEG, DPI, ITR, TOTAL, 
+C     &       DN(11,11), DBH(11,4)
       INTEGER  TOTAL
 C
       CHARACTER  CHAR*80
@@ -98,18 +97,19 @@ C----- Read data into matrix DAA -----
       END IF 
       RETURN
       END 
-C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C:::: Set initial values ::::
+C::::::::::::::::::::::::::::::::::::::::::::::::::::
+C:::: Set initial values and harmonic matrix     ::::
       SUBROUTINE  PRI
-      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400, NA6=121)
-      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOILL, NHOWA,
-     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
-     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
-     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
-     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
-     &        DMUO, DOMEG, DPI, ITR, TOTAL,
-     &        DN(11,11), DBH(11,4)
-C----------------------------------------------Initialization
+      include'dm.inc'
+C      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400, NA6=121)
+C      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOILL, NHOWA,
+C     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
+C     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
+C     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
+C     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
+C     &        DMUO, DOMEG, DPI, ITR, TOTAL,
+C     &        DN(11,11), DBH(11,4)
+C--------------------------------------Initialization
       DO  I=1, NA1
         DO  J=1, NA2
           DH(I,J)=0.0
@@ -127,15 +127,15 @@ C----------------------------------------------Initialization
 C.... Convergence points
       NONC=0
       NONC2=0
-C--- Set values to matrix DN ---
 C--- Harmonic Matrix 'N'
-C---  |0 -1             .....|
-C---  |1  0                  |
-C---  |     0 -3             |
-C---  |     3  0        .....|
-C---  |          0 -5        |
-C---  |          5  0   .....|
-C---  |               .......|
+C---  |0  0  0                  |
+C---  |0  0 -1             .....|
+C---  |0  1  0                  |
+C---  |        0 -2             |
+C---  |        2  0        .....|
+C---  |             0 -3        |
+C---  |             3  0   .....|
+C---  |                   ......|
       DO  J=1, NDEG
         DO  K=1, NDEG
           DN(J,K)=0.0
