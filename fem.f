@@ -72,8 +72,10 @@ C           DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1
   200     CONTINUE
   
           DO 70  K=1, 3
+		  
             NNN = 1.0
             IF (J .EQ. K)  NNN=2.0
+			
             JJ = NOD(NE,K) + 1
             NCOL = NDEG * (JJ-1) + 1
             IF ((JJ .GT. NPO1) .AND. (JJ .LE. NPO2)) THEN
@@ -81,14 +83,19 @@ C           DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1
             ELSE
               DSIG2 = 1.0
             END IF
-C------------------------------- Substitute into band matrix DH()
+C------------------------------- Assemble band matrix DH()
+C                              (Reluctitivity + Harmonics)
+C
+C.......    parameters (bb+cc)/4*delta
             DCON = DSIG1 * DSIG2 * DSS(J,K)
+			
             DO M=1, NDEG
               DO N=1, NDEG
                 NL = NLOW + M -1
                 NC = NCOL + N -1
                 NC1 = NC - NL + NB
-                CON = DHH(M,N) * DCON + DN(M,N) * DS(NE,18) * NNN
+C                                DS(NE,18) = 5.93e7*omeg*delta/12
+                CON = DCON * DHH(M,N) + NNN * DS(NE,18) * DN(M,N)
 C               CON = DHH(M,N) * DCON
                 DH(NL,NC1) = DH(NL,NC1) + CON
               ENDDO

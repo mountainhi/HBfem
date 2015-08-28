@@ -3,7 +3,6 @@
 C...  from main.f
 	  parameter dpi = 3.1415927
 	  parameter df  = 1.0363E6
-	  parameter MAX = 40
 	  
 C*****     AAA is relative error bound
 	  COMMON  AAA, BBB, CCC, NCOIL, NOWA,

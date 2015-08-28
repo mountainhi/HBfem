@@ -26,8 +26,8 @@ C     DF=10.
       DF=1.0363E6
 C      DF=1.E6
 C     NDEG = 5...COMPUTE TO 2ND HARMONIC, 
-C            7...TO 3RD harmonic,  
-C            11...TO 5TH harmonic. 
+C            7...        TO 3RD harmonic,  
+C            11...       TO 5TH harmonic. 
       NDEG=5
 C      NHOWA = 1...Initialize DAA = 0.   2... INPUT FROM FILE
       NHOWA = 1  
@@ -57,7 +57,7 @@ C     CALL CMAT2
 C     CALL  FLUX
       CALL FLUXP
 	  
-C.....Create HARMONIC MATRIX
+C.....Create Reluctivity MATRIX
       IF (NDEG. EQ. 5) THEN
       CALL DMATA
 C     CALL CMATH
