@@ -65,6 +65,7 @@ C----------------------------------------- Substitute into Matrix K
           IF (INT(NOD(NE,4) / 100) .NE. 3)   GO TO  200
 		  
           DO  K=1, NDEG
+C                           ....DS( , 6+k) = delta * {J1s J1c .....} /3
             DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1-DC(NE,K)    
 C           DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1
           ENDDO
