@@ -84,7 +84,7 @@ C           DK(NLOW+K-1) = DK(NLOW+K-1)+DS(NE,6+K)*DSIG1
               DSIG2 = 1.0
             END IF
 C------------------------------- Assemble band matrix DH()
-C                              (Reluctitivity + Harmonics)
+C                              (Reluctivity + Harmonics)
 C
 C.......    parameters (bb+cc)/4*delta
             DCON = DSIG1 * DSIG2 * DSS(J,K)
