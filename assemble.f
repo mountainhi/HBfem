@@ -234,7 +234,7 @@ C.....initial
       ENDDO
 C.....	  
       DO 60  I=1, NELEM
-	  
+C              .....NOD(I,4) = 100 or 200 or 301 	  
         IF (INT(NOD(I,4)/100) .NE. 3)  GOTO 60
         IF (NOD(I,4) .EQ. 300)  GOTO 60
         J = NOD(I,4)-300
@@ -251,7 +251,7 @@ C.....
         DO J=2,NDEG
           DCCC(I, J) = 0.0
           DO K=1,3
-            DCCC(I, J) + DDA(K, J)
+            DCCC(I,J) = DCCC(I, J) + DDA(K, J)
           ENDDO
         ENDDO
    60 CONTINUE

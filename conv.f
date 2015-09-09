@@ -4,12 +4,12 @@ C::::::: Convergence test and Relaxation ::::::::::::::::::::
         include 'dm.inc'  
 C		 PARAMETER  (NA1=1995, NA2=249, NA3=755, NA4=744, NA5=400, NA6=121)
 C           COMMON     AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
-C         &                      NPO1, NOM, NPO2, NPOR, NELEM, NB, NDEG, NDE, DF, 
-C         &                      DH(NA1, NA2), DK(NA1), DAA(NA1), DA(NA1), 
-C         &                 DS(NA3, 18), DCS(NA3), DB(NA3, 22), DD(NA3, NA6), NOD(0:NA4,4),
-C         &                 XY(NA5, 2), DENRYU(1, 11), DC(NA3, 11), DCPRE(NA3, 11),
-C         &                 DMUO, DOMEG, DPI, ITR, TOTAL, 
-C         &                 DN(11, 11), DBH(11, 4)
+C         &            NPO1, NOM, NPO2, NPOR, NELEM, NB, NDEG, NDE, DF, 
+C         &            DH(NA1, NA2), DK(NA1), DAA(NA1), DA(NA1), 
+C         &            DS(NA3, 18), DCS(NA3), DB(NA3, 22), DD(NA3, NA6), NOD(0:NA4,4),
+C         &            XY(NA5, 2), DENRYU(1, 11), DC(NA3, 11), DCPRE(NA3, 11),
+C         &            DMUO, DOMEG, DPI, ITR, TOTAL, 
+C         &            DN(11, 11), DBH(11, 4)
         INTEGER  TOTAL
 C
         IF (ITR.EQ.1)  THEN
