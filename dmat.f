@@ -15,7 +15,10 @@ C
 C----- Reluctivity[D] , [elements][25] is
 C----- treated as 5 * 5 square matrix in second dimension
       DO 10  NE=1, NELEM
+	  
         IF (INT(NOD(NE,4) / 100) .EQ. 2)  GO TO 1000
+		
+C....   Coil or air
         DO K=1, 25
           DD(NE,K) = 0.0
         ENDDO
@@ -25,6 +28,8 @@ C----- treated as 5 * 5 square matrix in second dimension
         DD(NE,19) = DD(NE,1)
         DD(NE,25) = DD(NE,1)
         GO TO  9999
+		
+C.....  Magnetic core
  1000   CONTINUE
  
         HD = 2.0 * DPI / 72.0
