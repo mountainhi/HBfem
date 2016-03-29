@@ -12,6 +12,7 @@ C     &       DMUO, DONEG, DPI, ITR, TOTAL,
 C     &       DN(11,11), DBH(11,4)
       INTEGER  TOTAL
 C
+      open(15,file='fem718s.dat')
       CHARACTER  CHAR*80
       READ(15,9900) CHAR
       READ(15,9900) CHAR
