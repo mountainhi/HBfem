@@ -26,6 +26,7 @@ C          NELEM: number of elements(nodes)
      &     NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
 	 
 C*****   matrix and vectors
+C*****          H * A = K
 C           DH :
 C           DK :
 C	        DA :

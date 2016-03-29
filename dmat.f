@@ -1,5 +1,6 @@
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C::::::           DMATA  Create harmonic matrix DD()       :::::::::
+C::::::           DMATA  Create reluctivity matrix DD()   :::::::::
+C::::::                       to 2nd harmonics
       SUBROUTINE  DMATA
       include 'dm.inc'
 !      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
@@ -122,7 +123,8 @@ C
       RETURN
       END
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C::::::::::::::::: DMATB  Create harmonic matrix ::::::::::::::::::
+C::::::::::::::::: DMATB  Create reluctivity matrix :::::::::::::::
+C::::                              to 3rd harmonics
       SUBROUTINE  DMATB
       PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=744,NA5=400,NA6=121)
       COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
@@ -267,7 +269,9 @@ C-------------------------------------------------------------------------------
       PRINT  '(10X, "DMATB")'
       RETURN
       END
-C:::::::::::::::::::::::::::::DMATC Creating a harmonic matrix:::::::::::::::::::::::::
+	  
+C::::::::::::    DMATC Creating a reluctivity matrix   ::::::::::::
+C:::                                    to 5th harmonics
           SUBROUTINE        DMATC
       PARAMETER  (NA1=1995, NA2=249, NA3=755, NA4=744, NA5=400, NA6=121)
       COMMON     AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
@@ -521,8 +525,8 @@ C
        PRINT '(10X,"DMATC")'
        RETURN
        END
-:::::::::::::::::::::::::::::::::::::::::::::::::
-C::::::::::::::::: DMATH Creating a harmonic matrix:::::::::
+C:::::::::::::::::::::::::::::::::::::::::::::::::
+C::::::::::::::::: DMATH Creating a reluctivity matrix:::::::::
        SUBROUTINE   DMATH 
        PARAMETER  (NA1=1995, NA2=249, NA3=755, NA4=744, NA5=400, NA6=121)
        COMMON     AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
