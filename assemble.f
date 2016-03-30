@@ -1,20 +1,24 @@
 C:::: SMAT Computing of coefficients of elements in matrix DS :::::
       SUBROUTINE SMAT
-      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
-      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
-     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB,NDEG, NDE, DF,
-     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
-     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NDD(0:NA4,4),
-     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
-     &        DMUO, DOMEG, DPI, ITR, TOTAL,
-     &        DN(11,11), DBH(11,4)
-      DIMENSION  DX(3), DY(3), DR(3)
+
+      use param 
+      use matvec
+      
+!      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
+!      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
+!     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB,NDEG, NDE, DF,
+!     &        DH(NA1,NA2), DK(NA1), DAA(NA1), DA(NA1),
+!     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NDD(0:NA4,4),
+!     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
+!     &        DMUO, DOMEG, DPI, ITR, TOTAL,
+!     &        DN(11,11), DBH(11,4)
+      real(8), DIMENSION(3)::  DX, DY, DR , DQ
 C
       DO 10  I=1, NELEM
-        DO 20  J=1, 3
+        DO  J=1, 3
           DX(J) = XY(NOD(I,J)+1,1)
           DY(J) = XY(NOD(I,J)+1,2)
-   20   CONTINUE
+        ENDDO
         DCS(I) = (DX(2)*DY(3)+DX(1)*DY(2)+DX(3)*DY(1)
      &            -DX(2)*DY(1)-DX(1)*DY(3)-DX(3)*DY(2))*0.5D0
 C-------------------------------------------------------------DEBUG
@@ -31,12 +35,12 @@ C------    b (DQ) and c(DR) in the interpolating function
         ENDDO
    
         N=1
-        DO 40  J=1, 3
-          DO 50  K=J, 3
+        DO   J=1, 3
+          DO   K=J, 3
             DS(I,N) = 0.25/DCS(I)*(DR(J)*DR(K)+DQ(J)* DQ(K))
             N=N+1
-   50     CONTINUE
-   40   CONTINUE
+          ENDDO
+        ENDDO
 c...    Current density source
         IF (INT(NOD(I,4)/100) .EQ. 3) THEN
           DC1 = DENRYU(1,1)
@@ -99,7 +103,8 @@ C         DS(I,18) = DBH(NOD(I,4)-199, 4)*DOMEG*DCS(I)/12.0
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C:: SMATP  Computing coefficients in Matrix DS for axially symmetric
       SUBROUTINE SMATP
-      include 'dm.inc'
+      use param
+      use matvec
 C       PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
 C      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
 C     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF, 
@@ -108,7 +113,8 @@ C     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
 C     &        XY(NA5,2), DENTYU(1,11), DC(NA3,11), DCPRE(NA3,11), 
 C     &        DNUO, DOMEG, DPI, ITR, TOTAL,
 C     &        DN(11,11), DBH(11,4)
-      DIMENSION DX(3), DY(3), DQ(3), DR(3)
+
+      real(8), DIMENSION(3)::  DX, DY, DR, DQ
 C
       DO 10  I=1, NELEM
 	  
@@ -118,7 +124,7 @@ C
         END DO
 C.......Compute the area of elements
         DCS(I) = ( DX(2)*DY(3)+DX(1)*DY(2)+DX(3)*DY(1)
-     &            - DX(2)*CY(1) - DX(1)*DY(3) - DX(3)*DY(2) )*.5D0
+     &            - DX(2)*DY(1) - DX(1)*DY(3) - DX(3)*DY(2) )*.5D0
 C-------------------------------------------------------------DEBUG
         IF (DCS(I) .EQ. 0.0) THEN
           PRINT *, 'Area = 0  ',I
@@ -208,7 +214,8 @@ C------------------------------------------------------
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C::::
       SUBROUTINE  CMAT2
-      include ' dm.inc'
+      use param
+      use matvec
 C      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)                                                        
 c      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
 C     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
@@ -217,7 +224,10 @@ C     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
 C     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
 C     &        DMUO, NOMEG, DPI, ITR, TOTAL,
 C     &        DN(11,11), DBH(11,4)
-      DIMENSION  DCC(NA3,11), DCCC(NA3,11), S(9), DDA(3,11)
+C      DIMENSION  DCC(NA3,11), DCCC(NA3,11), S(9), DDA(3,11)
+      real(8), DIMENSION(NA3,11)::  DCC, DCCC
+      real(8), DIMENSION(9)::  S
+      real(8), DIMENSION(3,11)::  DDA
 	  
 C.....initial
       DO  I=1, NELEM
@@ -263,8 +273,8 @@ C 310   CONTINUE
 C 300 CONTINUE
 C-------------------------------------------------------------------
       DO I=1, NELEM
-        IF (INT(NOD(I,4)/100) .NE. 3) GOTO 10
-        IF (NOD(I,4) .EQ. 300) GOTO 10
+        IF (INT(NOD(I,4)/100) .NE. 3) exit
+        IF (NOD(I,4) .EQ. 300) exit
         J = NOD(I,4) - 300
         DO  K=2, NDEG
           DCC(J,K) = DCC(J,K) + DCCC(I,K) * DCS(I)
@@ -316,7 +326,8 @@ C
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C::::Computing coefficients in Matrix DC
       SUBROUTINE  CMATP
-      include 'dm.inc'
+      use param
+      use matvec
 C      PARAMETER (NA1=1995,NA2 = 249,NA3=755,NA4=755,NA5=400,NA6=121)
 C      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA,
 C     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF, 
@@ -325,7 +336,11 @@ C     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4)
 C     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11), 
 C     &        DMUO , DOMEG, DPI, ITR, TOTAL,
 c     &        DN(11,11), DBH(11,4)
-      DIMENSION  DCC (NA3,11), DCCC(NA3,11), S(9), DDA(3,11), DX(3)
+C      DIMENSION  DCC (NA3,11), DCCC(NA3,11), S(9), DDA(3,11), DX(3)
+      real(8), DIMENSION(NA3,11)::  DCC, DCCC
+      real(8), DIMENSION(9)::  S
+      real(8), DIMENSION(3,11)::  DDA
+      real(8), DIMENSION(3):: DX
 C 
       DO I=1, NELEM
         DO J=1, NDEG
@@ -353,9 +368,9 @@ C
           END DO
           DX(J) = XY(N+1, 1)
         ENDDO
-		
+
         DDX = (DX(1) + DX(2) + DX(3)) / 3.0
-		
+
         DO J=2, NDEG
           DCCC(I,J) = 0.0
           DO  K=1, 3
@@ -371,8 +386,8 @@ C 310   CONTINUE
 C 300 CONTINUE
 C ---------------------------------------------------------------------
       DO I=1, NELEM
-        IF (INT(NOD(I,4) / 100) .NE. 3) GOTO  10
-        IF (NOD(I,4) .DQ. 300) GOTO 10
+        IF (INT(NOD(I,4) / 100) .NE. 3) exit
+        IF (NOD(I,4) .EQ. 300) exit
         J = NOD(I,4) - 300
         DO K=2, NDEG
           DCC(J,K) = DCC(J,K) + DCCC(K,K) * DCS(I)

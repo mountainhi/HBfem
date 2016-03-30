@@ -1,7 +1,8 @@
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C::::: FEM  Assemble the matrices DH() , DK()                ::::::
       SUBROUTINE  FEM
-      include 'dm.inc'
+      use param
+      use matvec 
 C      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
 C      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NHOWA, 
 C     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
@@ -10,8 +11,10 @@ C     &        DS(NA3,18), DCS(NA3), DB(NA3,22), DD(NA3,NA6), NOD(0:NA4,4),
 C     &        XY(NA5,2), DENRYU(1,11), DC(NA3,11), DCPRE(NA3,11),
 C     &        DMUO, DOMEG, DPI, ITR, TOTAL,
 C     &        DN(11,11), DBH(11,4)
-      DIMENSION  DHH(11,11), DSS(3,3)
-      REAL NNN
+
+      real(8), DIMENSION(11,11)::DHH 
+      real(8), DIMENSION(3,3)::DSS
+      REAL(8) ::NNN
 C---------------------
 C.... Internal
 C     DX ()
@@ -111,7 +114,8 @@ C               CON = DHH(M,N) * DCON
 C::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C::::::: FEM  Computing coefficients of element matrix DH() :::::::
       SUBROUTINE  FEMP
-      include "dm.inc"
+      use param
+      use matvec 
 CCC      PARAMETER (NA1=1995,NA2=249,NA3=755,NA4=755,NA5=400,NA6=121)
 C      COMMON  AAA, BBB, NONC, CCC, NONC2, NCOIL, NOWA,
 C     &        NPO1, NOM, NPO2, NPO3, NPOR, NELEM, NB, NDEG, NDE, DF,
@@ -133,8 +137,11 @@ C     DK(I)   :  FORCED VECTOR   (NOB)
 C     DA(I)   :  POTENTIAL       (NOB)
 C     NOM     :  NUMBER OF UNKNOW POTENTIAL
 C     NB      :  BAND  WIDTH
-      DIMENSION  DHH(11,11), DSS(3,3), DX(3)
-      REAL  NNN
+      real(8), DIMENSION(11,11)::DHH 
+      real(8), DIMENSION(3,3)::DSS
+      real(8), DIMENSION(3)::DX
+
+      REAL(8)::NNN
 C----------------------------------------------------INITIALIZATION
       DO  I=1, NA1
         DK(I) = 0.0
